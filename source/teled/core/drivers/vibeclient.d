@@ -1,15 +1,25 @@
 module teled.core.drivers.vibeclient;
 import std;
 
+
 import vibe.d;
 import teled.core.drivers.http : HttpClient;
 
 public class VibeClient : HttpClient
 {
     string getRequest(string url) 
-    {
+    {   
+        string data;
         HTTPClientResponse response = requestHTTP(url);
-        return response.bodyReader.readAllUTF8(true);
+        if (response.statusCode == 200) 
+        {
+            data = response.bodyReader.readAllUTF8(true);
+        }
+        else
+        {
+            throw new Exception("Server Error");
+        }
+        return data;
     }
 
     string postRequest(string url, string bodyJson)
@@ -22,9 +32,15 @@ public class VibeClient : HttpClient
                 request.writeBody( cast(const(ubyte[])) bodyJson);
             },
             (scope HTTPClientResponse response) {
-                data = response.bodyReader.readAllUTF8(true);
                 logDebug("Response headers:\n  %s\n  %s", response, response.headers);
                 logDiagnostic("Response body:\n  %s", data);
+                if (response.statusCode == 200) {
+                    data = response.bodyReader.readAllUTF8(true);
+                }
+                else
+                {
+                    throw new Exception("Server Error");
+                }
             }
         );
 

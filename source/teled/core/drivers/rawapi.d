@@ -1,6 +1,8 @@
 module teled.core.drivers.rawapi;
 import teled.core.options: Options;
 import teled.core.drivers.http: HttpClient;
+import teled.telegram.user: User;
+
 
 abstract class ATelegramBotClient
 {   
@@ -14,7 +16,8 @@ abstract class ATelegramBotClient
     @property
     Options options() {return _options; }
 
-    T makeRequest(T)();
+    T makeRequest(T)(string method);
 
-    string getMe();
+    User getMe();
 }
+

@@ -4,6 +4,8 @@ import teled.core.drivers.rawapi: ATelegramBotClient;
 import teled.core.options: Options;
 import teled.core.drivers.vibeclient: VibeClient;
 import teled.core.drivers.http: HttpClient;
+import teled.telegram.user :User;
+
 public class TelegramClient : ATelegramBotClient
 {
     this(string token, HttpClient client = new VibeClient()) {
@@ -16,39 +18,38 @@ public class TelegramClient : ATelegramBotClient
         super.client = client;
     }
 
-    T makeRequest(T)() {
-        writeln(T);
+    T makeRequest(T)(string method) {
+        auto data = client.getRequest(super.options.url ~ method,);
+        writeln(data);
+        auto user = User(data);
+        return user;
     }
 
-    override string getMe() 
+    T makeRequest(T)(string method, string bodyJson) {
+        auto data = client.postRequest(super.options.url ~ method, bodyJson);
+        auto user = User(data);
+        return user;
+    }
+
+    override User getMe() 
     {
-        writeln(super.options.url ~ "/getMe");
+        User user = makeRequest!User("/getMe");
 
-        auto data = client.getRequest(super.options.url ~ "/getMe");
-        return data;
+        return user;
     }
 
 }
-import std.typecons : Nullable;
-import asdf;
 
-struct Simple
-{
-    string name;
-    ulong level;
-    Nullable!string her;
-}
+import std.json;
+
 unittest
 {
-    // auto bot = new TelegramClient("6622260946:AAErrswzp6RxwYXxulFzhCLP028Hw608tJs");
-    // auto str = bot.getMe();
-    // writeln(str);
+    auto bot = new TelegramClient("6622260946:AAErrswzp6RxwYXxulFzhCLP028Hw608tJs");
+    auto str = bot.getMe();
+    writeln(str);
+    // JSONValue j = parseJSON(str);
+    // if ("ok" in j) writeln(j);
 
 
-    auto o = Simple("asdf", 42, "her");
-    // string data = `{"name":"asdf","level":42,"her":"null"}`;
-    auto d = o.serializeToJson();
-    // auto c = data.deserialize!Simple;
-    writeln(d);
-    // writeln(c);
+
 }

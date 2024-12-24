@@ -1,8 +1,8 @@
 import std.stdio;
 
-import teled.core.drivers.http: HttpClient;
+import teled.core.drivers.http : HttpClient;
 
 void main()
 {
-	writeln("Edit source/app.d to start your project.");
+    writeln("Edit source/app.d to start your project.");
 }

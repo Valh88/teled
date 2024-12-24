@@ -3,18 +3,17 @@ import std.json;
 import std.typecons;
 import std;
 
-
 struct User
 {
-    ulong    id;
-    bool   is_bot;
+    ulong id;
+    bool is_bot;
     string first_name;
 
     Nullable!string last_name;
     Nullable!string username;
     Nullable!string language_code;
 
-    this(string data) 
+    this(string data)
     {
         JSONValue dataJson = parseJSON(data)["result"];
         writeln(dataJson["id"]);

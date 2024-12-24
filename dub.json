@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Vano"
+	],
+	"copyright": "Copyright © 2024, Vano",
+	"description": "A minimal D application.",
+	"license": "proprietary",
+	"name": "teled"
+}

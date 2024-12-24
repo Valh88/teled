@@ -23,14 +23,14 @@ public class TelegramClient : ATelegramBotClient
     {
         auto data = client.getRequest(super.options.url ~ method,);
         writeln(data);
-        auto user = User(data);
+        auto user = T(data);
         return user;
     }
 
     T makeRequest(T)(string method, string bodyJson)
     {
         auto data = client.postRequest(super.options.url ~ method, bodyJson);
-        auto user = User(data);
+        auto user = T(data);
         return user;
     }
 

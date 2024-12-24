@@ -3,6 +3,11 @@
 		"Vano"
 	],
 	"copyright": "Copyright © 2024, Vano",
+	"dependencies": {
+		"asdf": "~>0.7.17",
+		"mir-ion": "~>2.3.3",
+		"vibe-d": "~>0.10"
+	},
 	"description": "A minimal D application.",
 	"license": "proprietary",
 	"name": "teled"

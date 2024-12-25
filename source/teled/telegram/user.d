@@ -23,7 +23,7 @@ struct User
     {
         _setUser(jsonData);
     }
-    
+
     private void _setUser(JSONValue dataJson)
     {
         this.id = dataJson["id"].get!ulong;

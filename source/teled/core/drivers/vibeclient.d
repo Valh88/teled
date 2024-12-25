@@ -28,8 +28,7 @@ public class VibeClient : HttpClient
             request.method = HTTPMethod.POST;
             request.headers["Content-Type"] = "application/json";
             request.writeBody(cast(const(ubyte[])) bodyJson);
-        }, 
-        (scope HTTPClientResponse response) {
+        }, (scope HTTPClientResponse response) {
             logDebug("Response headers:\n  %s\n  %s", response, response.headers);
             logDiagnostic("Response body:\n  %s", data);
             if (response.statusCode == 200)

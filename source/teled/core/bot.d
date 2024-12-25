@@ -5,6 +5,7 @@ import teled.core.options : Options;
 import teled.core.drivers.vibeclient : VibeClient;
 import teled.core.drivers.http : HttpClient;
 import teled.telegram.user : User;
+import teled.core.metods;
 
 public class TelegramClient : ATelegramBotClient
 {
@@ -27,11 +28,10 @@ public class TelegramClient : ATelegramBotClient
         return user;
     }
 
-    T makeRequest(T)(string method, string bodyJson)
+    string makeRequest(T)(string method, string bodyJson)
     {
         auto data = client.postRequest(super.options.url ~ method, bodyJson);
-        auto user = T(data);
-        return user;
+        return data;
     }
 
     override User getMe()
@@ -47,9 +47,7 @@ import std.json;
 unittest
 {
     auto bot = new TelegramClient("6622260946:AAErrswzp6RxwYXxulFzhCLP028Hw608tJs");
-    auto str = bot.getMe();
-    writeln(str);
-    // JSONValue j = parseJSON(str);
-    // if ("ok" in j) writeln(j);
-
+    // auto str = bot.getMe();
+    auto data = bot.getUpdate();
+    writeln(data);
 }

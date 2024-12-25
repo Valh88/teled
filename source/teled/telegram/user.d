@@ -16,7 +16,16 @@ struct User
     this(string data)
     {
         JSONValue dataJson = parseJSON(data)["result"];
-        writeln(dataJson["id"]);
+        _setUser(dataJson);
+    }
+
+    this(JSONValue jsonData)
+    {
+        _setUser(jsonData);
+    }
+    
+    private void _setUser(JSONValue dataJson)
+    {
         this.id = dataJson["id"].get!ulong;
         this.is_bot = dataJson["is_bot"].get!bool;
         this.first_name = dataJson["first_name"].get!string();

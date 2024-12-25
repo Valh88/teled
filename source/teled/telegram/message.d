@@ -64,6 +64,12 @@ struct Message
         if ("from" in jsonData)
             from = User(jsonData["from"]);
     }
+
+    this(string strData)
+    {
+        auto jsonData = parseJSON(strData)["result"];
+        this(jsonData);
+    }
 }
 
 struct MessageEntity

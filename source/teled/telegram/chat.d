@@ -59,6 +59,11 @@ struct Chat
         return _type;
     }
 
+    @property string chat_id()
+    {
+        return to!string(id);
+    }
+
     this(JSONValue jsonData)
     {
         id = jsonData["id"].get!long;

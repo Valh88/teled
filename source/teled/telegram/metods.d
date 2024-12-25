@@ -2,8 +2,10 @@ module teled.telegram.metods;
 import std.typecons;
 import std.json;
 import std;
+import std.sumtype;
 import teled.telegram.update;
 import teled.core.bot;
+import teled.telegram.markup;
 
 struct GetUpdatesMethod
 {
@@ -38,7 +40,36 @@ struct GetUpdatesMethod
     }
 }
 
-// unittest
-// {
-//     auto bot = TelegramClient();
-// }
+alias ChatId = SumType!(int, string);
+
+alias ReplyMarkup = SumType!(ReplyKeyboardMarkup, ReplyKeyboardRemove,
+        InlineKeyboardMarkup, ForceReply);
+
+struct SendMessageMethod
+{
+    public static url = "/sendMessage";
+
+    ChatId chat_id;
+    string text;
+    Nullable!ParseMode parse_mode;
+    Nullable!bool disable_web_page_preview;
+    Nullable!bool disable_notification;
+    Nullable!uint reply_to_message_id;
+
+    Nullable!ReplyMarkup reply_markup;
+
+    @property string stringJson()
+    {
+        JSONValue data;
+        data["chat_id"] = chat_id.toString();
+        data["text"] = text;
+        return data.toString();
+    }
+}
+
+enum ParseMode : string
+{
+    Markdown = "Markdown",
+    HTML = "HTML",
+    None = "",
+}

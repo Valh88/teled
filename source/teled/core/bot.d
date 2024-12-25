@@ -23,7 +23,6 @@ public class TelegramClient : ATelegramBotClient
     T makeRequest(T)(string method)
     {
         auto data = client.getRequest(super.options.url ~ method,);
-        writeln(data);
         auto user = T(data);
         return user;
     }
@@ -46,8 +45,10 @@ import std.json;
 
 unittest
 {
-    auto bot = new TelegramClient("6622260946:AAErrswzp6RxwYXxulFzhCLP028Hw608tJs");
+    auto bot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
     // auto str = bot.getMe();
-    auto data = bot.getUpdate();
-    writeln(data);
+    // auto data = bot.getUpdate();
+    // writeln(data);
+    // bot.sendMessage("610864528", "dasdasd");
+    bot.start();
 }

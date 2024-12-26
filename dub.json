@@ -5,6 +5,7 @@
 	"copyright": "Copyright © 2024, Vano",
 	"dependencies": {
 		"asdf": "~>0.7.17",
+		"mir-core": "~>1.7.1",
 		"mir-ion": "~>2.3.3",
 		"vibe-d": "~>0.10"
 	},

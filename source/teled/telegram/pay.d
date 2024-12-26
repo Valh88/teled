@@ -1,5 +1,6 @@
 module teled.telegram.pay;
 import std.typecons;
+import asdf;
 import teled.telegram.user : User;
 
 struct Invoice
@@ -17,7 +18,7 @@ struct SuccessfulPayment
     uint total_amount;
     string invoice_payload;
     string shipping_option_id;
-    Nullable!OrderInfo order_info;
+    @serdeOptional Nullable!OrderInfo order_info;
     string telegram_payment_charge_id;
     string provider_payment_charge_id;
 }
@@ -27,7 +28,7 @@ struct OrderInfo
     string name;
     string phone_number;
     string email;
-    Nullable!ShippingAddress shipping_address;
+    @serdeOptional Nullable!ShippingAddress shipping_address;
 }
 
 struct ShippingAddress

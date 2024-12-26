@@ -2,6 +2,7 @@ module teled.telegram.message;
 import std.json;
 import std.typecons;
 import std;
+import asdf;
 import teled.telegram.user : User;
 import teled.telegram.chat : Chat;
 import teled.telegram.stiker : Sticker;
@@ -12,64 +13,47 @@ struct Message
 {
     uint message_id;
     uint date;
-    Chat chat;
-    Nullable!User from;
-    Nullable!User forward_from;
-    Nullable!Chat forward_from_chat;
-    Nullable!uint forward_from_message_id;
-    Nullable!string forward_signature;
-    Nullable!string forward_sender_name;
-    Nullable!uint forward_date;
-    Nullable!uint edit_date;
-    Nullable!string media_group_id;
-    Nullable!string author_signature;
-    Nullable!string text;
-    Nullable!(MessageEntity[]) entities;
-    Nullable!(MessageEntity[]) caption_entities;
-    Nullable!Audio audio;
-    Nullable!Document document;
-    Nullable!Animation animation;
-    Nullable!Game game;
-    Nullable!Poll poll;
-    Nullable!(PhotoSize[]) photo;
-    Nullable!Sticker sticker;
-    Nullable!Video video;
-    Nullable!Voice voice;
-    Nullable!VideoNote video_note;
-    Nullable!string caption;
-    Nullable!Contact contact;
-    Nullable!Location location;
-    Nullable!Venue venue;
-    Nullable!(User[]) new_chat_members;
-    Nullable!User left_chat_member;
-    Nullable!string new_chat_title;
-    Nullable!(PhotoSize[]) new_chat_photo;
-    Nullable!bool delete_chat_photo;
-    Nullable!bool group_chat_created;
-    Nullable!bool supergroup_chat_created;
-    Nullable!bool channel_chat_created;
-    Nullable!long migrate_to_chat_id;
-    Nullable!long migrate_from_chat_id;
-    Nullable!Invoice invoice;
-    Nullable!SuccessfulPayment successful_payment;
-    Nullable!string connected_website;
-
-    this(JSONValue jsonData)
-    {
-        message_id = jsonData["message_id"].get!uint;
-        date = jsonData["date"].get!uint;
-        chat = Chat(jsonData["chat"]);
-        if ("text" in jsonData)
-            text = jsonData["text"].get!string;
-        if ("from" in jsonData)
-            from = User(jsonData["from"]);
-    }
-
-    this(string strData)
-    {
-        auto jsonData = parseJSON(strData)["result"];
-        this(jsonData);
-    }
+    @serdeOptional Chat chat;
+    @serdeOptional Nullable!User from;
+    @serdeOptional Nullable!User forward_from;
+    @serdeOptional Nullable!Chat forward_from_chat;
+    @serdeOptional Nullable!uint forward_from_message_id;
+    @serdeOptional Nullable!string forward_signature;
+    @serdeOptional Nullable!string forward_sender_name;
+    @serdeOptional Nullable!uint forward_date;
+    @serdeOptional Nullable!uint edit_date;
+    @serdeOptional Nullable!string media_group_id;
+    @serdeOptional Nullable!string author_signature;
+    @serdeOptional Nullable!string text;
+    @serdeOptional Nullable!(MessageEntity[]) entities;
+    @serdeOptional Nullable!(MessageEntity[]) caption_entities;
+    @serdeOptional Nullable!Audio audio;
+    @serdeOptional Nullable!Document document;
+    @serdeOptional Nullable!Animation animation;
+    @serdeOptional Nullable!Game game;
+    @serdeOptional Nullable!Poll poll;
+    @serdeOptional Nullable!(PhotoSize[]) photo;
+    @serdeOptional Nullable!Sticker sticker;
+    @serdeOptional @serdeOptional Nullable!Video video;
+    @serdeOptional Nullable!Voice voice;
+    @serdeOptional Nullable!VideoNote video_note;
+    @serdeOptional Nullable!string caption;
+    @serdeOptional Nullable!Contact contact;
+    @serdeOptional Nullable!Location location;
+    @serdeOptional Nullable!Venue venue;
+    @serdeOptional Nullable!(User[]) new_chat_members;
+    @serdeOptional Nullable!User left_chat_member;
+    @serdeOptional Nullable!string new_chat_title;
+    @serdeOptional Nullable!(PhotoSize[]) new_chat_photo;
+    @serdeOptional Nullable!bool delete_chat_photo;
+    @serdeOptional Nullable!bool group_chat_created;
+    @serdeOptional Nullable!bool supergroup_chat_created;
+    @serdeOptional Nullable!bool channel_chat_created;
+    @serdeOptional Nullable!long migrate_to_chat_id;
+    @serdeOptional Nullable!long migrate_from_chat_id;
+    @serdeOptional Nullable!Invoice invoice;
+    @serdeOptional Nullable!SuccessfulPayment successful_payment;
+    @serdeOptional Nullable!string connected_website;
 }
 
 struct MessageEntity
@@ -77,38 +61,60 @@ struct MessageEntity
     MessageEntityType type;
     uint offset;
     uint length;
-    Nullable!string url;
-    Nullable!User user;
+    @serdeOptional Nullable!string url;
+    @serdeOptional Nullable!User user;
 }
 
 enum MessageEntityType : string
 {
-    Mention = "mention",
-    Hashtag = "hashtag",
-    Cashtag = "cashtag",
-    BotCommand = "bot_command",
-    Url = "url",
-    Email = "email",
-    PhoneNumber = "phone_number",
-    Bold = "bold",
-    Italic = "italic",
-    Underline = "underline",
-    Strikethrough = "strikethrough",
-    Code = "code",
-    Pre = "pre",
-    TextLink = "text_link",
-    TextMension = "text_mention"
+    @serdeKeys("mention", "mention") Mention = "mention",
+
+    @serdeKeys("hashtag", "hashtag") Hashtag = "hashtag",
+
+    @serdeKeys(
+            "cashtag", "cashtag") Cashtag = "cashtag",
+
+    @serdeKeys("bot_command",
+            "bot_command") BotCommand = "bot_command",
+
+    @serdeKeys("url", "url") Url = "url",
+
+    @serdeKeys("email", "email") Email = "email",
+
+    @serdeKeys("phone_number",
+            "phone_number") PhoneNumber = "phone_number",
+
+    @serdeKeys("bolt",
+            "bolt") Bold = "bold",
+
+    @serdeKeys("italic",
+            "italic") Italic = "italic",
+
+    @serdeKeys("underline",
+            "underline") Underline = "underline",
+
+    @serdeKeys("strikethrough",
+            "strikethrough") Strikethrough = "strikethrough",
+
+    @serdeKeys("code", "code") Code = "code",
+
+    @serdeKeys("pre",
+            "pre") Pre = "pre",
+
+    @serdeKeys("text_link", "text_link") TextLink = "text_link",
+
+    @serdeKeys("text_mention", "text_mention") TextMension = "text_mention"
 }
 
 struct Audio
 {
     string file_id;
     uint duration;
-    Nullable!string performer;
-    Nullable!string title;
-    Nullable!string mime_type;
-    Nullable!uint file_size;
-    Nullable!PhotoSize thumb;
+    @serdeOptional Nullable!string performer;
+    @serdeOptional Nullable!string title;
+    @serdeOptional Nullable!string mime_type;
+    @serdeOptional Nullable!uint file_size;
+    @serdeOptional Nullable!PhotoSize thumb;
 }
 
 struct PhotoSize
@@ -117,7 +123,7 @@ struct PhotoSize
     int width;
     int height;
 
-    Nullable!uint file_size;
+    @serdeOptional Nullable!uint file_size;
 }
 
 struct Document
@@ -158,11 +164,11 @@ struct Poll
     bool is_anonymous;
     string type;
     bool allows_multiple_answers;
-    Nullable!uint correct_option_id;
-    Nullable!string explanation;
-    Nullable!(MessageEntity[]) explanation_entities;
-    Nullable!uint open_period;
-    Nullable!uint close_date;
+    @serdeOptional Nullable!uint correct_option_id;
+    @serdeOptional Nullable!string explanation;
+    @serdeOptional Nullable!(MessageEntity[]) explanation_entities;
+    @serdeOptional Nullable!uint open_period;
+    @serdeOptional Nullable!uint close_date;
 }
 
 struct PollOption
@@ -175,17 +181,17 @@ struct Contact
 {
     string phone_number;
     string first_name;
-    Nullable!string last_name;
-    Nullable!uint user_id;
-    Nullable!string vcard;
+    @serdeOptional Nullable!string last_name;
+    @serdeOptional Nullable!uint user_id;
+    @serdeOptional Nullable!string vcard;
 }
 
 struct ChosenInlineResult
 {
     string result_id;
     User from;
-    Nullable!Location location;
-    Nullable!string inline_message_id;
+    @serdeOptional Nullable!Location location;
+    @serdeOptional Nullable!string inline_message_id;
     string query;
 }
 
@@ -193,7 +199,7 @@ struct CallbackQuery
 {
     string id;
     User from;
-    Nullable!Message message;
+    @serdeOptional Nullable!Message message;
     string inline_message_id;
     string chat_instance;
     string data;
@@ -204,7 +210,7 @@ struct InlineQuery
 {
     string id;
     User from;
-    Nullable!Location location;
+    @serdeOptional Nullable!Location location;
     string query;
     string offset;
 }
@@ -217,7 +223,7 @@ struct PreCheckoutQuery
     uint total_amount;
     string invoice_payload;
     string shipping_option_id;
-    Nullable!OrderInfo order_info;
+    @serdeOptional Nullable!OrderInfo order_info;
 }
 
 struct PollAnswer

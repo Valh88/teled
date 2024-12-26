@@ -2,10 +2,10 @@ module teled.core.metods;
 import std : writeln;
 import std.conv;
 import std.json;
+import asdf;
 import std.algorithm;
-import teled.core.bot;
 import teled.telegram.update;
-import teled.core.bot : TelegramClient;
+import teled.bot : TelegramClient;
 import teled.telegram.metods;
 import teled.telegram.markup;
 import teled.telegram.update;
@@ -13,8 +13,8 @@ import teled.telegram.message;
 
 Update[] getUpdate(TelegramClient bot, ref GetUpdatesMethod getU)
 {
-    auto str = bot.makeRequest!Update(GetUpdatesMethod.url, getU.stringJson);
-    return Update.stringJsonToList(str);
+    auto str = bot.makeRequest(GetUpdatesMethod.url, serializeToJson(getU));
+    return deserialize!(Update[])(parseJson(str)["result"]);
 }
 
 Message sendMessage(TelegramClient bot, string chatId, string text)
@@ -22,29 +22,24 @@ Message sendMessage(TelegramClient bot, string chatId, string text)
     auto sm = SendMessageMethod();
     sm.chat_id = chatId;
     sm.text = text;
-    auto data = bot.makeRequest!Message(SendMessageMethod.url, sm.stringJson);
-    return Message(data);
+    return bot.makeRequest!Message(SendMessageMethod.url, sm.stringJson);
 }
 
-void start(TelegramClient bot)
+void startPooling(TelegramClient bot)
 {
-    GetUpdatesMethod getU = GetUpdatesMethod(0, 100, 400);
     while (true)
     {
-        foreach (Update update; bot.getUpdate(getU))
+        foreach (Update update; bot.getUpdate(bot.getU))
         {
             if (!update.message.isNull)
             {
-                writeln(update.message.get.text);
-                if (update.message.get.text == "/start")
-                {
-                    //test
-                    Message mess = update.message.get;
-                    bot.sendMessage(mess.chat.chat_id, "huy");
-                }
+                bot.onMessageCallback(update, update.message.get);
             }
-            getU.offset = update.update_id + 1;
+            else
+            {
+                bot.defaultCallbackMessage(update);
+            }
+            bot.getU.offset = update.update_id + 1;
         }
-
     }
 }

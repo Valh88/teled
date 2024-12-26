@@ -1,20 +1,20 @@
 module teled.telegram.markup;
 import std.typecons;
 import std.algorithm;
+import asdf;
 
 struct ReplyKeyboardMarkup
 {
     KeyboardButton[][] keyboard;
-
-    Nullable!bool resize_keyboard;
-    Nullable!bool one_time_keyboard;
-    Nullable!bool selective;
+    @serdeOptional Nullable!bool resize_keyboard;
+    @serdeOptional Nullable!bool one_time_keyboard;
+    @serdeOptional Nullable!bool selective;
 }
 
 struct ReplyKeyboardRemove
 {
     bool remove_keyboard = true;
-    Nullable!bool selective;
+    @serdeOptional Nullable!bool selective;
 }
 
 struct InlineKeyboardMarkup
@@ -25,7 +25,7 @@ struct InlineKeyboardMarkup
 struct ForceReply
 {
     bool force_reply = true;
-    Nullable!bool selective;
+    @serdeOptional Nullable!bool selective;
 }
 
 struct InlineKeyboardButton

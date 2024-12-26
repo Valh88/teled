@@ -25,6 +25,11 @@ Message sendMessage(TelegramClient bot, string chatId, string text)
     return bot.makeRequest!Message(SendMessageMethod.url, sm.stringJson);
 }
 
+Message sendMessage(TelegramClient bot, SendMessageMethod method)
+{
+    return bot.makeRequest!Message(SendMessageMethod.url, method.stringJson);
+}
+
 void startPooling(TelegramClient bot)
 {
     while (true)

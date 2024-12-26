@@ -3,7 +3,7 @@ import std.typecons;
 import std.json;
 import std : writeln;
 import std.sumtype;
-import mir.algebraic : Variant;
+import mir.algebraic : Variant, isVariant;
 import asdf;
 import teled.telegram.update;
 import teled.bot;
@@ -27,7 +27,7 @@ struct GetUpdatesMethod
         this.allowed_updates = allowed_updates;
     }
 
-    @property string stringJson()
+    string stringJson()
     {
         JSONValue data;
         if (!offset.isNull)
@@ -44,7 +44,7 @@ struct GetUpdatesMethod
 
 alias ChatId = Variant!(int, string);
 
-alias ReplyMarkup = SumType!(ReplyKeyboardMarkup, ReplyKeyboardRemove,
+alias ReplyMarkup = Variant!(ReplyKeyboardMarkup, ReplyKeyboardRemove,
         InlineKeyboardMarkup, ForceReply);
 
 struct SendMessageMethod
@@ -57,20 +57,36 @@ struct SendMessageMethod
     @serdeOptional Nullable!bool disable_web_page_preview;
     @serdeOptional Nullable!bool disable_notification;
     @serdeOptional Nullable!uint reply_to_message_id;
-    @serdeOptional Nullable!ReplyMarkup reply_markup;
+    @serdeOptional ReplyMarkup reply_markup;
 
+    @serdeIgnore
     @property string stringJson()
     {
         JSONValue data;
         data["chat_id"] = chat_id.toString();
         data["text"] = text;
+        try {
+            InlineKeyboardMarkup d = reply_markup.get!InlineKeyboardMarkup;
+            data["reply_parkup"] = d.serialise();
+        } catch (Exception e) {
+            writeln("error");
+        }
         return data.toString();
+    }
+
+    @serdeIgnore
+    @property void reply(ReplyMarkup markup)
+    {
+        reply_markup = markup;
     }
 }
 
 enum ParseMode : string
-{
+{   
+    @serdeKeys("Markdown", "Markdown")
     Markdown = "Markdown",
+    @serdeKeys("HTML", "HTML")
     HTML = "HTML",
+    @serdeKeys("", "")
     None = "",
 }

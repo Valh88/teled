@@ -1,18 +1,22 @@
 module teled.telegram.metods;
 import std.typecons;
 import std.json;
-import std;
+import std : writeln;
+import std.sumtype;
+import mir.algebraic : Variant;
+import asdf;
 import teled.telegram.update;
-import teled.core.bot;
+import teled.bot;
+import teled.telegram.markup;
 
 struct GetUpdatesMethod
 {
+    public static url = "/getUpdates";
 
     Nullable!int offset;
     Nullable!ubyte limit;
     Nullable!uint timeout;
     Nullable!(UpdateType[]) allowed_updates;
-    public static url = "/getUpdates";
 
     this(int offset, ubyte limit, uint timeout, UpdateType[] allowed_updates = [
     ])
@@ -38,7 +42,35 @@ struct GetUpdatesMethod
     }
 }
 
-// unittest
-// {
-//     auto bot = TelegramClient();
-// }
+alias ChatId = Variant!(int, string);
+
+alias ReplyMarkup = SumType!(ReplyKeyboardMarkup, ReplyKeyboardRemove,
+        InlineKeyboardMarkup, ForceReply);
+
+struct SendMessageMethod
+{
+    public static url = "/sendMessage";
+
+    ChatId chat_id;
+    string text;
+    @serdeOptional Nullable!ParseMode parse_mode;
+    @serdeOptional Nullable!bool disable_web_page_preview;
+    @serdeOptional Nullable!bool disable_notification;
+    @serdeOptional Nullable!uint reply_to_message_id;
+    @serdeOptional Nullable!ReplyMarkup reply_markup;
+
+    @property string stringJson()
+    {
+        JSONValue data;
+        data["chat_id"] = chat_id.toString();
+        data["text"] = text;
+        return data.toString();
+    }
+}
+
+enum ParseMode : string
+{
+    Markdown = "Markdown",
+    HTML = "HTML",
+    None = "",
+}

@@ -1,5 +1,6 @@
 module teled.telegram.content;
 import std.typecons;
+import asdf;
 import teled.telegram.message : PhotoSize;
 
 struct Video
@@ -41,6 +42,6 @@ struct Venue
     Location location;
     string title;
     string address;
-    Nullable!string foursquare_id;
-    Nullable!string foursquare_type;
+    @serdeOptional Nullable!string foursquare_id;
+    @serdeOptional Nullable!string foursquare_type;
 }

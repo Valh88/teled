@@ -2,6 +2,7 @@ module teled.telegram.update;
 import std : writeln;
 import std.typecons;
 import std.json;
+import asdf;
 import teled.telegram.message;
 import teled.telegram.pay;
 import teled.telegram.user;
@@ -9,50 +10,34 @@ import teled.telegram.user;
 struct Update
 {
     uint update_id;
-    Nullable!Message message;
-
-    Nullable!Message edited_message;
-    Nullable!Message channel_post;
-    Nullable!Message edited_channel_post;
-    Nullable!InlineQuery inline_query;
-    Nullable!ChosenInlineResult chosen_inline_result;
-    Nullable!CallbackQuery callback_query;
-    Nullable!ShippingQuery shipping_query;
-    Nullable!PreCheckoutQuery pre_checkout_query;
-    Nullable!Poll poll;
-    Nullable!PollAnswer poll_answer;
-
-    static Update[] stringJsonToList(string data)
-    {
-        Update[] updates;
-        JSONValue jsonData = parseJSON(data)["result"];
-        writeln(jsonData.toPrettyString());
-        foreach (dataJsonUpdate; jsonData.array())
-        {
-            updates ~= Update(dataJsonUpdate);
-        }
-        return updates;
-    }
-
-    this(JSONValue jsonData)
-    {
-        update_id = jsonData["update_id"].get!uint;
-        if ("message" in jsonData)
-            message = Message(jsonData["message"]);
-    }
+    @serdeOptional Nullable!Message message;
+    @serdeOptional Nullable!Message edited_message;
+    @serdeOptional Nullable!Message channel_post;
+    @serdeOptional Nullable!Message edited_channel_post;
+    @serdeOptional Nullable!InlineQuery inline_query;
+    @serdeOptional Nullable!ChosenInlineResult chosen_inline_result;
+    @serdeOptional Nullable!CallbackQuery callback_query;
+    @serdeOptional Nullable!ShippingQuery shipping_query;
+    @serdeOptional Nullable!PreCheckoutQuery pre_checkout_query;
+    @serdeOptional Nullable!Poll poll;
+    @serdeOptional Nullable!PollAnswer poll_answer;
 }
 
 enum UpdateType : string
 {
-    Message = "message",
-    EditedMessage = "edited_message",
-    ChannelPost = "channel_post",
-    EditedChannelPost = "edited_channel_post",
-    InlineQuery = "inline_query",
-    ChosenInlineResult = "chosen_inline_result",
-    CallbackQuery = "callback_query",
-    ShippingQuery = "shipping_query",
-    PreCheckoutQuery = "pre_checkout_query",
-    Poll = "poll",
-    PollAnswer = "poll_answer"
+    @serdeKeys("message", "message") Message = "message",
+    @serdeKeys("edited_message",
+            "edited_message") EditedMessage = "edited_message",
+    @serdeKeys("channel_post",
+            "channel_post") ChannelPost = "channel_post",
+    @serdeKeys("edited_channel_post", "edited_channel_post") EditedChannelPost = "edited_channel_post",
+    @serdeKeys("inline_query",
+            "inline_query") InlineQuery = "inline_query",
+    @serdeKeys("chosen_inline_result",
+            "chosen_inline_result") ChosenInlineResult = "chosen_inline_result",
+    @serdeKeys("callback_query", "callback_query") CallbackQuery = "callback_query",
+    @serdeKeys("shipping_query", "shipping_query") ShippingQuery = "shipping_query",
+    @serdeKeys("pre_checkout_query", "pre_checkout_query") PreCheckoutQuery
+        = "pre_checkout_query", @serdeKeys("poll", "poll") Poll = "poll",
+    @serdeKeys("poll_answer", "poll_answer") PollAnswer = "poll_answer"
 }

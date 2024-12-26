@@ -1,6 +1,6 @@
 # teled
 
-```
+```D
 import std.stdio;
 import teled.packade;
 

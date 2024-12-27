@@ -31,16 +31,19 @@ public class VibeClient : HttpClient
         }, (scope HTTPClientResponse response) {
             logDebug("Response headers:\n  %s\n  %s", response, response.headers);
             logDiagnostic("Response body:\n  %s", data);
-            if (response.statusCode == 200)
-            {
-                data = response.bodyReader.readAllUTF8(true);
-            }
-            else
-            {
-                throw new Exception("Server Error");
-            }
+            data = response.bodyReader.readAllUTF8(true);
+            // if (response.statusCode == 200)
+            // {
+            //     data = response.bodyReader.readAllUTF8(true);
+            // }
+            // else
+            // {
+            //     //TODO callback error
+            //     writeln(response.bodyReader.readAllUTF8(true));
+            //     // throw new Exception("Server Error");
+            // }
         });
-
+        writeln(data);
         return data;
     }
 }

@@ -34,4 +34,9 @@ struct User
         this.first_name = dataJson["first_name"].get!string();
         this.username = dataJson["username"].get!string();
     }
+
+    @serdeIgnore @property string user_id()
+    {
+        return id.to!string;
+    }
 }

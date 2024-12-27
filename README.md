@@ -1,4 +1,5 @@
 # teled
+смал либ для тг ботов чисто для себя
 
 ```D
 import std.stdio;
@@ -13,8 +14,12 @@ void main()
             bot.sendMessage(message.chat.chat_id, "1488");
     });
 
+    listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
+        
+        ///logic
+    });
+
+
     listenerBot.startPooling();
 }
-
-
 ```

@@ -3,11 +3,17 @@ import std.typecons;
 import std.json;
 import std : writeln;
 import std.sumtype;
-import mir.algebraic : Variant;
+import mir.algebraic : Variant, isVariant;
 import asdf;
+import mir.deser.json : deserializeJson;
+import mir.ser.json : serializeJson;
+import mir.deser.json : deserializeJson;
+import mir.ser.json : serializeJson;
 import teled.telegram.update;
 import teled.bot;
 import teled.telegram.markup;
+import teled.telegram.metods;
+import teled.telegram.command;
 
 struct GetUpdatesMethod
 {
@@ -26,51 +32,66 @@ struct GetUpdatesMethod
         this.timeout = timeout;
         this.allowed_updates = allowed_updates;
     }
-
-    @property string stringJson()
-    {
-        JSONValue data;
-        if (!offset.isNull)
-            data["offset"] = offset.toString();
-        if (!limit.isNull)
-            data["limit"] = limit.toString();
-        if (!timeout.isNull)
-            data["timeout"] = timeout.toString();
-        if (!allowed_updates.isNull)
-            data["allowed_updates"] = allowed_updates.toString();
-        return data.toString();
-    }
 }
 
 alias ChatId = Variant!(int, string);
 
-alias ReplyMarkup = SumType!(ReplyKeyboardMarkup, ReplyKeyboardRemove,
+alias ReplyMarkup = Variant!(ReplyKeyboardMarkup, ReplyKeyboardRemove,
         InlineKeyboardMarkup, ForceReply);
 
-struct SendMessageMethod
+@serdeRealOrderedIn static struct SendMessageMethod
 {
     public static url = "/sendMessage";
 
     ChatId chat_id;
     string text;
-    @serdeOptional Nullable!ParseMode parse_mode;
-    @serdeOptional Nullable!bool disable_web_page_preview;
-    @serdeOptional Nullable!bool disable_notification;
-    @serdeOptional Nullable!uint reply_to_message_id;
-    @serdeOptional Nullable!ReplyMarkup reply_markup;
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.parse_mode.isNull == false)) @serdeOptional Nullable!ParseMode parse_mode;
 
-    @property string stringJson()
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.disable_web_page_preview.isNull == false)) @serdeOptional Nullable!bool disable_web_page_preview;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.disable_notification.isNull == false)) @serdeOptional Nullable!bool disable_notification;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.reply_to_message_id.isNull == false)) @serdeOptional Nullable!uint reply_to_message_id;
+
+    // @serdeIgnoreOutIfAggregate!((ref a) => !(a.reply_markup.isNull == false))
+    @serdeOptional ReplyMarkup reply_markup;
+
+    unittest
     {
-        JSONValue data;
-        data["chat_id"] = chat_id.toString();
-        data["text"] = text;
-        return data.toString();
+        auto data = SendMessageMethod();
+        data.chat_id = "123";
+        data.text = "dsad";
+        auto mk = InlineKeyboardButton();
+        mk.text = "3213";
+        mk.callback_data = "dasd";
+
+        auto imk = InlineKeyboardMarkup();
+        imk.inline_keyboard = [[mk]];
+        data.reply_markup = imk;
+        // writeln(serializeJson!SendMessageMethod(data));
     }
 }
 
 enum ParseMode : string
 {
-    Markdown = "Markdown",
-    HTML = "HTML",
-    None = "",
+    @serdeKeys("Markdown", "Markdown") Markdown = "Markdown",
+    @serdeKeys("HTML", "HTML") HTML = "HTML",
+    @serdeKeys("", "") None = "",
+}
+
+struct SetMyCommandsMetod
+{
+    static url = "/setMyCommands";
+
+    BotCommand[] commands;
+    // scope_
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.language_code.isNull == false)) @serdeOptional Nullable!string language_code;
+
+    unittest
+    {
+        auto botCommands = [BotCommand("text", "command text")];
+        auto c = SetMyCommandsMetod();
+        c.commands = botCommands;
+        writeln(c);
+    }
 }

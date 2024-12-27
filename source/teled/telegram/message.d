@@ -200,10 +200,10 @@ struct CallbackQuery
     string id;
     User from;
     @serdeOptional Nullable!Message message;
-    string inline_message_id;
-    string chat_instance;
-    string data;
-    string game_short_name;
+    @serdeOptional string inline_message_id;
+    @serdeOptional string chat_instance;
+    @serdeOptional string data;
+    @serdeOptional string game_short_name;
 }
 
 struct InlineQuery

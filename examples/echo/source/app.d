@@ -10,5 +10,11 @@ void main()
             bot.sendMessage(message.chat.chat_id, "1488");
     });
 
+    listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
+        
+        ///logic
+    });
+
+
     listenerBot.startPooling();
 }

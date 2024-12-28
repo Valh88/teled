@@ -2,6 +2,9 @@ module teled.core.metods;
 import std : writeln;
 import std.conv;
 import std.json;
+import std.logger;
+import core.time;
+import std.datetime.systime;
 import asdf;
 import mir.deser.json : deserializeJson;
 import mir.ser.json : serializeJson;
@@ -38,33 +41,48 @@ void setMyCommand(TelegramClient bot, SetMyCommandsMetod sm)
     bot.makeRequest(SetMyCommandsMetod.url, serializeJson(sm));
 }
 
+void answerCallbackQuery(TelegramClient bot, AnswerCallbackQuery query)
+{
+    bot.makeRequest(AnswerCallbackQuery.url_, serializeJson(query));
+}
+
 void startPooling(TelegramClient bot)
 {
+    //TODO add async tasks maybe
+    log("start polling");
+    SysTime previousTime = Clock.currTime();
+    auto tick = 3.seconds;
     while (true)
     {
-        foreach (Update update; bot.getUpdate(bot.getU))
+        SysTime currentTime = Clock.currTime();
+        Duration deltaTime = currentTime - previousTime;
+
+        if (deltaTime > tick)
         {
-            if (!update.callback_query.isNull)
+            foreach (Update update; bot.getUpdate(bot.getU))
             {
-                bot.callbackQuery(update, update.callback_query.get);
-            }
-            else
-            {
-                if (!update.message.isNull)
+                if (!update.callback_query.isNull)
                 {
-                    bot.onMessageCallback(update, update.message.get);
+                    bot.callbackQuery(update, update.callback_query.get);
                 }
                 else
                 {
-                    bot.defaultCallbackMessage(update);
+                    if (!update.message.isNull)
+                    {
+                        bot.onMessageCallback(update, update.message.get);
+                    }
+                    else
+                    {
+                        bot.defaultCallbackMessage(update);
+                    }
                 }
+                bot.getU.offset = update.update_id + 1;
             }
-            bot.getU.offset = update.update_id + 1;
+            previousTime = currentTime;
         }
 
-        import core.thread.osthread;
-        import core.time;
-
-        Thread.sleep(dur!("seconds")(3));
+        // import core.thread.osthread;
+        // import core.time;
+        // Thread.sleep(dur!("seconds")(3));
     }
 }

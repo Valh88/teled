@@ -43,7 +43,7 @@ public class VibeClient : HttpClient
             //     // throw new Exception("Server Error");
             // }
         });
-        writeln(data);
+        logDiagnostic("Response headers:\n  %s\n  %s", response);
         return data;
     }
 }

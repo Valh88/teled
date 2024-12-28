@@ -84,7 +84,7 @@ struct SetMyCommandsMetod
     static url = "/setMyCommands";
 
     BotCommand[] commands;
-    // scope_
+    // scope_//TODO
     @serdeIgnoreOutIfAggregate!((ref a) => !(a.language_code.isNull == false)) @serdeOptional Nullable!string language_code;
 
     unittest
@@ -94,4 +94,27 @@ struct SetMyCommandsMetod
         c.commands = botCommands;
         writeln(c);
     }
+}
+
+struct AnswerCallbackQuery
+{
+    static string url_ =  "/answerCallbackQuery";
+
+    string callback_query_id;
+    
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.text.isNull == false))
+    @serdeOptional
+    Nullable!string text;
+    
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.show_alert.isNull == false))
+    @serdeOptional 
+    Nullable!bool show_alert;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.url.isNull == false))
+    @serdeOptional
+    Nullable!string url;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.cache_time.isNull == false))
+    @serdeOptional
+    Nullable!int cache_time;
 }

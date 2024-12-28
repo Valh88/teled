@@ -117,15 +117,11 @@ unittest
     auto listenerBot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
     // writeln(listenerBot.getMe());
     listenerBot.onMessage((TelegramClient bot, Update update, Message message) {
-        if (message.text == "Слава РУСИ")
-            bot.sendMessage(message.chat.chat_id, "1488");
+
     });
 
     listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
-        writeln(query);
-        auto a = AnswerCallbackQuery();
-        a.callback_query_id = query.id;
-        bot.answerCallbackQuery(a);
+
     });
 
     listenerBot.startPooling();

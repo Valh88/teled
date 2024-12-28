@@ -10,7 +10,7 @@ public class VibeClient : HttpClient
     {
         string data;
         HTTPClientResponse response = requestHTTP(url);
-    
+
         data = response.bodyReader.readAllUTF8(true);
         return data;
     }

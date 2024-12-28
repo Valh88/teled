@@ -74,7 +74,7 @@ public class TelegramClient : ATelegramBotClient
 
     private T _serealizeData(T)(Asdf data)
     {
-        if (data["ok"].to!bool) 
+        if (data["ok"].to!bool)
         {
             return deserialize!(T)(data["result"]);
         }
@@ -116,9 +116,7 @@ unittest
 {
     auto listenerBot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
     // writeln(listenerBot.getMe());
-    listenerBot.onMessage((TelegramClient bot, Update update, Message message) {
-
-    });
+    listenerBot.onMessage((TelegramClient bot, Update update, Message message) {});
 
     listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
 

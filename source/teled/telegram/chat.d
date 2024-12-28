@@ -36,8 +36,7 @@ struct Chat
     @serdeOptional Nullable!string sticker_set_name;
     @serdeOptional Nullable!bool can_set_sticker_set;
 
-    @serdeIgnore
-    @property string chat_id()
+    @serdeIgnore @property string chat_id()
     {
         return to!string(id);
     }

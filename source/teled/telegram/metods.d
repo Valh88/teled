@@ -14,6 +14,7 @@ import teled.bot;
 import teled.telegram.markup;
 import teled.telegram.metods;
 import teled.telegram.command;
+import teled.telegram.message : MessageEntity;
 
 struct GetUpdatesMethod
 {
@@ -109,4 +110,37 @@ struct AnswerCallbackQuery
     @serdeIgnoreOutIfAggregate!((ref a) => !(a.url.isNull == false)) @serdeOptional Nullable!string url;
 
     @serdeIgnoreOutIfAggregate!((ref a) => !(a.cache_time.isNull == false)) @serdeOptional Nullable!int cache_time;
+}
+
+struct EditMessageText
+{
+    static url = "/editMessageText";
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.business_connection_id.isNull == false)) @serdeOptional Nullable!string business_connection_id;
+
+    // @serdeIgnoreOutIfAggregate!((ref a) => !(a.chat_id.isNull == false))
+    @serdeOptional ChatId chat_id;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.message_id.isNull == false)) @serdeOptional Nullable!int message_id;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.inline_message_id.isNull == false)) @serdeOptional Nullable!string inline_message_id;
+
+    string text;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.parse_mode.isNull == false)) @serdeOptional Nullable!string parse_mode;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.entities.isNull == false)) @serdeOptional Nullable!MessageEntity entities;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.link_preview_options.isNull == false)) @serdeOptional Nullable!LinkPreviewOptions link_preview_options;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.reply_markup.isNull == false)) @serdeOptional Nullable!InlineKeyboardMarkup reply_markup;
+}
+
+struct LinkPreviewOptions
+{
+    bool is_disabled;
+    string url;
+    bool prefer_small_media;
+    bool prefer_large_media;
+    bool show_above_text;
 }

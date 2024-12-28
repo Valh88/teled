@@ -10,14 +10,8 @@ public class VibeClient : HttpClient
     {
         string data;
         HTTPClientResponse response = requestHTTP(url);
-        if (response.statusCode == 200)
-        {
-            data = response.bodyReader.readAllUTF8(true);
-        }
-        else
-        {
-            throw new Exception("Server Error");
-        }
+
+        data = response.bodyReader.readAllUTF8(true);
         return data;
     }
 

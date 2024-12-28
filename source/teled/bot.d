@@ -2,6 +2,7 @@ module teled.bot;
 import std : writeln;
 import std.stdio;
 import std.logger;
+import std.conv;
 import asdf;
 import mir.deser.json : deserializeJson;
 import mir.ser.json : serializeJson;
@@ -50,14 +51,7 @@ public class TelegramClient : ATelegramBotClient
     T makeRequest(T)(string method)
     {
         auto data = client.getRequest(super.options.url ~ method,);
-        auto typeT = deserialize!T(parseJson(data)["result"]);
-        return typeT;
-    }
-
-    string makeRequest(string method)
-    {
-        auto data = client.getRequest(super.options.url ~ method,);
-        return data;
+        return _serealizeData!T(parseJson(data));
     }
 
     string makeRequest(string method, string bodyJson)
@@ -69,13 +63,26 @@ public class TelegramClient : ATelegramBotClient
     T makeRequest(T)(string method, string bodyJson)
     {
         auto data = client.postRequest(super.options.url ~ method, bodyJson);
-        return deserialize!(T)(parseJson(data)["result"]);
+        return _serealizeData!T(parseJson(data));
     }
 
     override User getMe()
     {
         User user = makeRequest!User(User.url);
         return user;
+    }
+
+    private T _serealizeData(T)(Asdf data)
+    {
+        if (data["ok"].to!bool)
+        {
+            return deserialize!(T)(data["result"]);
+        }
+        else
+        {
+            _errorCallback(data.to!string);
+        }
+        return T();
     }
 
     void onMessage(void function(TelegramClient bot, Update update, Message message) func)
@@ -107,5 +114,13 @@ public class TelegramClient : ATelegramBotClient
 
 unittest
 {
+    auto listenerBot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
+    // writeln(listenerBot.getMe());
+    listenerBot.onMessage((TelegramClient bot, Update update, Message message) {});
 
+    listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
+
+    });
+
+    listenerBot.startPooling();
 }

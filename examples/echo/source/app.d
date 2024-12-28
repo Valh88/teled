@@ -11,10 +11,9 @@ void main()
     });
 
     listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
-        
+
         ///logic
     });
-
 
     listenerBot.startPooling();
 }

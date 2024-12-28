@@ -98,23 +98,15 @@ struct SetMyCommandsMetod
 
 struct AnswerCallbackQuery
 {
-    static string url_ =  "/answerCallbackQuery";
+    static string url_ = "/answerCallbackQuery";
 
     string callback_query_id;
-    
-    @serdeIgnoreOutIfAggregate!((ref a) => !(a.text.isNull == false))
-    @serdeOptional
-    Nullable!string text;
-    
-    @serdeIgnoreOutIfAggregate!((ref a) => !(a.show_alert.isNull == false))
-    @serdeOptional 
-    Nullable!bool show_alert;
 
-    @serdeIgnoreOutIfAggregate!((ref a) => !(a.url.isNull == false))
-    @serdeOptional
-    Nullable!string url;
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.text.isNull == false)) @serdeOptional Nullable!string text;
 
-    @serdeIgnoreOutIfAggregate!((ref a) => !(a.cache_time.isNull == false))
-    @serdeOptional
-    Nullable!int cache_time;
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.show_alert.isNull == false)) @serdeOptional Nullable!bool show_alert;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.url.isNull == false)) @serdeOptional Nullable!string url;
+
+    @serdeIgnoreOutIfAggregate!((ref a) => !(a.cache_time.isNull == false)) @serdeOptional Nullable!int cache_time;
 }

@@ -22,7 +22,10 @@ public class TelegramClient : ATelegramBotClient
     //on calback query toto
     //on calback inlinequery todo
     private void function(TelegramClient bot, Update update) _defaultCallbackMessage = function(
-            TelegramClient bot, Update up) { writeln(up);  writeln("default callback update");};
+            TelegramClient bot, Update up) {
+        writeln(up);
+        writeln("default callback update");
+    };
 
     private void function(string error) _errorCallback = (string error) {
         writeln(error);
@@ -104,32 +107,5 @@ public class TelegramClient : ATelegramBotClient
 
 unittest
 {
-    auto getU = GetUpdatesMethod();
-    getU.timeout = 2000;
-    auto listenerBot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
-    listenerBot.getU = getU;
-    listenerBot.onMessage((TelegramClient bot, Update update, Message message) {
-        writeln(message.entities);
-        auto sm = SendMessageMethod();
-        sm.chat_id = message.chat.chat_id;
-        sm.text = message.text.get;
-        auto b = InlineKeyboardButton();
-        b.text = "sdasdsadasd";
-        b.callback_data = "123";
 
-        auto c = InlineKeyboardMarkup([
-            [b]
-        ]);
-        sm.reply_markup = c; 
-
-        bot.sendMessage(sm);
-    });
-
-    listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
-        AnswerCallbackQuery answer;
-        answer.callback_query_id = query.id;
-        // bot.answerCallbackQuery(answer);
-    });
-
-    listenerBot.startPooling();
 }

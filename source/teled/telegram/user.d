@@ -16,25 +16,6 @@ struct User
     @serdeOptional Nullable!string username;
     @serdeOptional Nullable!string language_code;
 
-    this(string data)
-    {
-        JSONValue dataJson = parseJSON(data)["result"];
-        _setUser(dataJson);
-    }
-
-    this(JSONValue jsonData)
-    {
-        _setUser(jsonData);
-    }
-
-    private void _setUser(JSONValue dataJson)
-    {
-        this.id = dataJson["id"].get!ulong;
-        this.is_bot = dataJson["is_bot"].get!bool;
-        this.first_name = dataJson["first_name"].get!string();
-        this.username = dataJson["username"].get!string();
-    }
-
     @serdeIgnore @property string user_id()
     {
         return id.to!string;

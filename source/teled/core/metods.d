@@ -46,6 +46,12 @@ void answerCallbackQuery(TelegramClient bot, AnswerCallbackQuery query)
     bot.makeRequest(AnswerCallbackQuery.url_, serializeJson(query));
 }
 
+void editMessageText(TelegramClient bot, EditMessageText em)
+{
+    auto data = bot.makeRequest(EditMessageText.url, serializeJson(em));
+    writeln(data);
+}
+
 void startPooling(TelegramClient bot)
 {
     //TODO add async tasks maybe

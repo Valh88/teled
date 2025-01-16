@@ -23,7 +23,7 @@ struct ChatPhoto
 
 struct Chat
 {
-    long id;
+    int id;
     ChatType type;
     @serdeOptional Nullable!string title;
     @serdeOptional Nullable!string first_name;
@@ -36,18 +36,8 @@ struct Chat
     @serdeOptional Nullable!string sticker_set_name;
     @serdeOptional Nullable!bool can_set_sticker_set;
 
-    @property string chat_id()
+    @serdeIgnore @property string chat_id()
     {
         return to!string(id);
-    }
-
-    this(JSONValue jsonData)
-    {
-        id = jsonData["id"].get!long;
-        // type = jsonData["type"].get!string;
-        if ("first_name" in jsonData)
-            first_name = jsonData["first_name"].get!string;
-        if ("username" in jsonData)
-            username = jsonData["username"].get!string;
     }
 }

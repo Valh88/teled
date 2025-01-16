@@ -2,6 +2,7 @@ module teled.bot;
 import std : writeln;
 import std.stdio;
 import std.logger;
+import std.conv;
 import asdf;
 import mir.deser.json : deserializeJson;
 import mir.ser.json : serializeJson;
@@ -18,17 +19,16 @@ import teled.telegram.markup;
 
 public class TelegramClient : ATelegramBotClient
 {
-    private void function(TelegramClient bot, Update update, Message message) _onMessageCallback;
+    private void delegate(Update update, Message message) _onMessageCallback;
     //on calback query toto
     //on calback inlinequery todo
-    private void function(TelegramClient bot, Update update) _defaultCallbackMessage = function(
-            TelegramClient bot, Update up) { writeln(up);  writeln("default callback update");};
+    private void delegate(Update update) _defaultCallbackMessage;
 
     private void function(string error) _errorCallback = (string error) {
         writeln(error);
     };
 
-    private void function(TelegramClient bot, Update update, CallbackQuery callbackQuery) _callBackQuery;
+    private void delegate(Update update, CallbackQuery callbackQuery) _callBackQuery;
 
     GetUpdatesMethod getU;
 
@@ -37,24 +37,23 @@ public class TelegramClient : ATelegramBotClient
         this(Options(token), client);
     }
 
+    private void defaultCallbackMess(Update update)
+    {
+        writeln(update);
+    }
+
     this(Options options, HttpClient client = new VibeClient())
     {
         this.getU = GetUpdatesMethod(0, 100, 400);
         super.options = options;
         super.client = client;
+        _defaultCallbackMessage = &defaultCallbackMess;
     }
 
     T makeRequest(T)(string method)
     {
         auto data = client.getRequest(super.options.url ~ method,);
-        auto typeT = deserialize!T(parseJson(data)["result"]);
-        return typeT;
-    }
-
-    string makeRequest(string method)
-    {
-        auto data = client.getRequest(super.options.url ~ method,);
-        return data;
+        return _serealizeData!T(parseJson(data));
     }
 
     string makeRequest(string method, string bodyJson)
@@ -66,7 +65,7 @@ public class TelegramClient : ATelegramBotClient
     T makeRequest(T)(string method, string bodyJson)
     {
         auto data = client.postRequest(super.options.url ~ method, bodyJson);
-        return deserialize!(T)(parseJson(data)["result"]);
+        return _serealizeData!T(parseJson(data));
     }
 
     override User getMe()
@@ -75,60 +74,57 @@ public class TelegramClient : ATelegramBotClient
         return user;
     }
 
-    void onMessage(void function(TelegramClient bot, Update update, Message message) func)
+    private T _serealizeData(T)(Asdf data)
+    {
+        if (data["ok"].to!bool)
+        {
+            return deserialize!(T)(data["result"]);
+        }
+        else
+        {
+            _errorCallback(data.to!string);
+        }
+        return T();
+    }
+
+    void onMessage(void delegate(Update update, Message message) func)
     {
         _onMessageCallback = func;
     }
 
     void onMessageCallback(Update update, Message message)
     {
-        _onMessageCallback(this, update, message);
+        _onMessageCallback(update, message);
     }
 
     void defaultCallbackMessage(Update update)
     {
-        _defaultCallbackMessage(this, update);
+        _defaultCallbackMessage(update);
     }
 
-    void onCallBackQuery(void function(TelegramClient bot, Update up, CallbackQuery cb) func)
+    void onCallBackQuery(void delegate(Update up, CallbackQuery cb) func)
     {
         _callBackQuery = func;
     }
 
     void callbackQuery(Update up, CallbackQuery qb)
     {
-        _callBackQuery(this, up, qb);
+        _callBackQuery(up, qb);
     }
 
 }
 
 unittest
 {
-    auto getU = GetUpdatesMethod();
-    getU.timeout = 2000;
-    auto listenerBot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
-    listenerBot.getU = getU;
-    listenerBot.onMessage((TelegramClient bot, Update update, Message message) {
-        writeln(message.entities);
-        auto sm = SendMessageMethod();
-        sm.chat_id = message.chat.chat_id;
-        sm.text = message.text.get;
-        auto b = InlineKeyboardButton();
-        b.text = "sdasdsadasd";
-        b.callback_data = "123";
+    auto listenerBot = new TelegramClient("token");
+    // writeln(listenerBot.getMe());
+    listenerBot.onMessage((Update update, Message message) { 
+        writeln(message); 
+        listenerBot.sendMessage(message.chat.chat_id, "dasdasdasd");
+        });
 
-        auto c = InlineKeyboardMarkup([
-            [b]
-        ]);
-        sm.reply_markup = c; 
+    listenerBot.onCallBackQuery((Update up, CallbackQuery query) {
 
-        bot.sendMessage(sm);
-    });
-
-    listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
-        AnswerCallbackQuery answer;
-        answer.callback_query_id = query.id;
-        // bot.answerCallbackQuery(answer);
     });
 
     listenerBot.startPooling();

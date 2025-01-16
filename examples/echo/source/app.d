@@ -3,14 +3,14 @@ import teled.packade;
 
 void main()
 {
-    auto listenerBot = new TelegramClient("token");
+    auto listenerBot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
 
-    listenerBot.onMessage((TelegramClient bot, Update update, Message message) {
+    listenerBot.onMessage((Update update, Message message) {
         if (message.text == "Слава РУСИ")
-            bot.sendMessage(message.chat.chat_id, "1488");
+            listenerBot.sendMessage(message.chat.chat_id, "1488");
     });
 
-    listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
+    listenerBot.onCallBackQuery((Update up, CallbackQuery query) {
 
         ///logic
     });

@@ -19,20 +19,16 @@ import teled.telegram.markup;
 
 public class TelegramClient : ATelegramBotClient
 {
-    private void function(TelegramClient bot, Update update, Message message) _onMessageCallback;
+    private void delegate(Update update, Message message) _onMessageCallback;
     //on calback query toto
     //on calback inlinequery todo
-    private void function(TelegramClient bot, Update update) _defaultCallbackMessage = function(
-            TelegramClient bot, Update up) {
-        writeln(up);
-        writeln("default callback update");
-    };
+    private void delegate(Update update) _defaultCallbackMessage;
 
     private void function(string error) _errorCallback = (string error) {
         writeln(error);
     };
 
-    private void function(TelegramClient bot, Update update, CallbackQuery callbackQuery) _callBackQuery;
+    private void delegate(Update update, CallbackQuery callbackQuery) _callBackQuery;
 
     GetUpdatesMethod getU;
 
@@ -41,11 +37,17 @@ public class TelegramClient : ATelegramBotClient
         this(Options(token), client);
     }
 
+    private void defaultCallbackMess(Update update)
+    {
+        writeln(update);
+    }
+
     this(Options options, HttpClient client = new VibeClient())
     {
         this.getU = GetUpdatesMethod(0, 100, 400);
         super.options = options;
         super.client = client;
+        _defaultCallbackMessage = &defaultCallbackMess;
     }
 
     T makeRequest(T)(string method)
@@ -85,29 +87,29 @@ public class TelegramClient : ATelegramBotClient
         return T();
     }
 
-    void onMessage(void function(TelegramClient bot, Update update, Message message) func)
+    void onMessage(void delegate(Update update, Message message) func)
     {
         _onMessageCallback = func;
     }
 
     void onMessageCallback(Update update, Message message)
     {
-        _onMessageCallback(this, update, message);
+        _onMessageCallback(update, message);
     }
 
     void defaultCallbackMessage(Update update)
     {
-        _defaultCallbackMessage(this, update);
+        _defaultCallbackMessage(update);
     }
 
-    void onCallBackQuery(void function(TelegramClient bot, Update up, CallbackQuery cb) func)
+    void onCallBackQuery(void delegate(Update up, CallbackQuery cb) func)
     {
         _callBackQuery = func;
     }
 
     void callbackQuery(Update up, CallbackQuery qb)
     {
-        _callBackQuery(this, up, qb);
+        _callBackQuery(up, qb);
     }
 
 }
@@ -116,9 +118,12 @@ unittest
 {
     auto listenerBot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
     // writeln(listenerBot.getMe());
-    listenerBot.onMessage((TelegramClient bot, Update update, Message message) {});
+    listenerBot.onMessage((Update update, Message message) { 
+        writeln(message); 
+        listenerBot.sendMessage(message.chat.chat_id, "dasdasdasd");
+        });
 
-    listenerBot.onCallBackQuery((TelegramClient bot, Update up, CallbackQuery query) {
+    listenerBot.onCallBackQuery((Update up, CallbackQuery query) {
 
     });
 

@@ -116,7 +116,7 @@ public class TelegramClient : ATelegramBotClient
 
 unittest
 {
-    auto listenerBot = new TelegramClient("7997355907:AAEFFgXtW4l4J5C7wbcE7wxWZcyOq2IWWao");
+    auto listenerBot = new TelegramClient("token");
     // writeln(listenerBot.getMe());
     listenerBot.onMessage((Update update, Message message) { 
         writeln(message); 
